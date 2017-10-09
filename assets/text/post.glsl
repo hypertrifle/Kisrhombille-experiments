@@ -40,10 +40,10 @@ vec3 RGBsampleSplit(sampler2D tex, vec2 coord)
 void main() {
 
 
-    // vec3 texcolor = RGBsampleSplit(tex0, tcoord); //our program output
+    vec4 texcolor = vec4(RGBsampleSplit(tex0, tcoord),1.); //our program output
     // vec3 texcolor1 = RGBsampleSplit(tex1, tcoord); //our texture
     
-    vec4 texcolor = texture2D(tex0, tcoord).rgba; //our texture
+    // vec4 texcolor = texture2D(tex0, tcoord).rgba; //our texture
     vec3 texcolor1 = texture2D(tex1, tcoord).rgb; //our overlay texture
 
     //texture overlay
