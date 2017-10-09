@@ -6,6 +6,13 @@ import models.kisrhombille.*;
 
 import C;
 
+import phoenix.Batcher;
+import phoenix.Shader;
+import phoenix.Texture;
+import phoenix.RenderTexture;
+import luxe.Sprite;
+import luxe.Rectangle;
+
 class Main extends luxe.Game {
 
     override function config(config:GameConfig) {
@@ -13,7 +20,16 @@ class Main extends luxe.Game {
         config.window.width = 960;
         config.window.height = 640;
         config.window.fullscreen = false;
-        
+        config.preload.textures.push({ id:'assets/img/01.jpg' });
+
+        #if web
+        config.preload.shaders.push({ id:'post_shader', frag_id:'assets/text/post_web.glsl', vert_id:'default' });
+        #end
+
+        #if cpp
+        config.preload.shaders.push({ id:'post_shader', frag_id:'assets/text/post.glsl', vert_id:'default' });
+        #end
+
         //config.preload.textures.push({id:'assets/img/'});
         //config.preload.texts.push({id:'assets/text/'});
 
@@ -103,8 +119,56 @@ class Main extends luxe.Game {
 
 
 
+    public var post_shader:Shader;
+    public var post_batcher:Batcher;
+    public var post_texture:RenderTexture;
+    public var display_sprite:Sprite;
+    public var shaderTime:Float;
+
+
+
 
     override function ready() {
+
+        //initilise our shaders and batchers
+        post_shader = Luxe.resources.shader('post_shader');
+        post_shader.set_float("time",0);
+        post_shader.set_vector2("resolution",new Vector(Luxe.screen.w,Luxe.screen.h));
+
+        //this is the texture we will use for the post processing
+        var texture_overlay = Luxe.resources.texture('assets/img/01.jpg');
+        texture_overlay.slot = 1;
+        post_shader.set_texture("tex1", texture_overlay);
+        shaderTime = 0;
+        post_shader.set_float("time",0);
+
+        //create a post_batcher
+        post_batcher = Luxe.renderer.create_batcher({
+             name : 'post_batcher',
+             layer : 1,
+             no_add : false,
+         });
+
+        //set the post batchers view to our current window viewport
+        post_batcher.view.viewport = new Rectangle(0,0,Luxe.screen.width,Luxe.screen.height);
+
+        //hook in our "before" and "after" to allow the render texture to capture the programs output
+        post_batcher.on(prerender, before);
+        post_batcher.on(postrender, after);
+
+
+         //create a render target of a fixed size
+         post_texture = new RenderTexture({ id:'rtt', width:Luxe.screen.w, height:Luxe.screen.h });
+
+        //this is our final display sprite, after output has been capture (what we apply our post shader to)
+         display_sprite = new Sprite({
+             texture : post_texture,
+             size : new Vector(Luxe.screen.width,Luxe.screen.height),
+             pos : Luxe.screen.mid,
+             shader: post_shader,
+             // visible:false
+         });
+
         
         polygons = new Array<KPolygon>();
 
@@ -136,9 +200,10 @@ class Main extends luxe.Game {
                             
                             var poly = segment(a,b,c,i);
 
-                            var red = Math.sin(count/2)*0.5;
-                            var green = Math.cos(count/4);
-                            var blue = Math.abs(c/(size*2))  + (Math.random()*0.2);
+                            var red = (Math.sin(i/3)+ (Math.random()*0.2) -0.1) * 0.7;
+                            var blue = Math.cos(count/10)*1.8;
+                            var green = Math.sin(count/20) + (Math.random()*0.2) -0.1;
+
 
 
                             poly.colour = new Color(red,green,blue);
@@ -163,6 +228,24 @@ class Main extends luxe.Game {
         // trace("BOOTING");
 
     } //ready
+
+     //our before render
+    function before(_) {
+
+            //Set the rendering target to the texture
+                Luxe.renderer.target = post_texture;
+                //clear the texture to an obvious color
+                // Luxe.renderer.clear(clear);
+
+    } //before
+
+    //our after render.
+    function after(_) {
+
+            //reset the target back to no target (i.e the screen)
+            Luxe.renderer.target = null;
+
+    } //after
 
     public function renderPolygons(polys) {
             trace(grid);
@@ -191,7 +274,7 @@ class Main extends luxe.Game {
             points : points,
             visible: true,
             depth: 1,
-            // batcher: batcher
+             batcher: post_batcher
             //texture: texture
             //shader: shader
         });
@@ -210,6 +293,8 @@ class Main extends luxe.Game {
     } //onkeyup
 
     override function update(dt:Float) {
+        shaderTime += dt; //increase current tome
+        post_shader.set_float("time",shaderTime);
 
     } //update
 
