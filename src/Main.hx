@@ -2,7 +2,7 @@ import luxe.GameConfig;
 import luxe.Input;
 import luxe.Vector;
 import luxe.Color;
-import models.KPoint;
+import models.kisrhombille.*;
 
 import C;
 
