@@ -55,7 +55,6 @@ class KPolygon {
             absoluteVertacies.push(new KPoint(vert.a + offset.a, vert.b + offset.b, vert.c + offset.c, vert.d));
         }
 
-
         //return this.
         return absoluteVertacies;
 
