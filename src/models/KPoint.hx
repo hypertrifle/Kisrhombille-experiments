@@ -5,6 +5,8 @@ typedef Point = { public var x:Float; public var y:Float; }
 
 class KPoint {
 
+    public var transformations_move:Array<Array<Int>>;
+
 
     public var a:Int;
     public var b:Int;
@@ -13,11 +15,24 @@ class KPoint {
 
     public function new(ant,bat,cat,dog){
 
+        transformations_move = new Array<Array<Int>>();
+        transformations_move.push([1,0,-1]);
+        transformations_move.push([1,-1,0]);
+        transformations_move.push([0,-1,1]);
+        transformations_move.push([-1,0,1]);
+        transformations_move.push([-1,1,0]);
+        transformations_move.push([0,1,-1]);
+        
 
         a = ant;
         b = bat;
         c = cat;
         d = dog;
+    }
+
+
+    public function moveCube(direction:Int){
+
     }
 }
 
@@ -61,6 +76,7 @@ class KSegment {
 }
 
 class KGrid {
+    //this stores all of the setttings for our grid used to render the grid how we wish.
 
     public var origin:Point;
     public var north:Float;
@@ -77,7 +93,11 @@ class KGrid {
     public var THETA:Float;
 
     public function new(x:Float,y:Float,n:Float,f:Float, clockwise:Bool ){
+
+        //in the kishombille all angles that span around the center point of a single cude is 30 degrees.
         THETA = 30 * (Math.PI/180);
+
+        //save or origin
         origin = {x:x,y:y};
 
         //north is the longest edge
@@ -86,7 +106,7 @@ class KGrid {
         //fish is the smallest edge
         fish = Math.sin(THETA) * north;
 
-        //goat is the length of the lines not on horizontal or verticle axis.
+        //goat is the length of the lines not on horizontal or verticle axis (our hypotenuse if treating each segment as a right angle triangle).
         goat = Math.sqrt(north*north - fish*fish);
 
         //hare is the oppisite edge of the goat and the ibex is the adjacent.
@@ -113,14 +133,14 @@ class KGrid {
         var x:Float = (_kpoint.b + _kpoint.a) * this.goat;
         var y:Float = ( (-_kpoint.b + _kpoint.a) * this.ibex ) + (_kpoint.c * this.ibex);
 
-        // calculate the coords of the master hexagon for the space.
-        var hex:Point = {x:origin.x + x, y:origin.y + y};
+        // calculate the coords of the master "cube" for the space.
+        var cube:Point = {x:origin.x + x, y:origin.y + y};
 
         //now based on the dog value
         var pointOffset:Point = dog_lookup[_kpoint.d];
 
-        //add to our hex position and offset
-        return {x: hex.x+pointOffset.x, y: hex.y + pointOffset.y }; 
+        //add to our "cube" position and offset
+        return {x: cube.x+pointOffset.x, y: cube.y + pointOffset.y }; 
 
 
 
