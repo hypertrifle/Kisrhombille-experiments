@@ -3,6 +3,12 @@ import luxe.Color;
 typedef Point = { public var x:Float; public var y:Float; }
 
 
+enum KPointType {
+  Center;
+  North;
+  Goat;
+}
+
 class KPoint {
 
     public var transformations_move:Array<Array<Int>>;
@@ -11,7 +17,9 @@ class KPoint {
     public var a:Int;
     public var b:Int;
     public var c:Int;
-    public var d:Int;
+    public var d(default,set):Int;
+
+    public var point_type:KPointType;
 
     public function new(ant,bat,cat,dog){
 
@@ -27,13 +35,42 @@ class KPoint {
         a = ant;
         b = bat;
         c = cat;
-        d = dog;
-    }
+        set_d(dog); //call our set D function as our point_type is derrived from this value.
 
 
+    } // end of constructor
+
+
+    //effects this kPoint
     public function moveCube(direction:Int){
+        this.a += transformations_move[direction][0];
+        this.b += transformations_move[direction][1];
+        this.c += transformations_move[direction][2];
+    }
+
+    public function set_d(value:Int):Int{
+        this.d = value;
+
+         if([1,3,5].indexOf(d) > -1){
+            point_type = Goat;
+        } else if([2,4].indexOf(d) > -1){
+            point_type = North;   
+        } else if(d == 0) {
+            point_type = Center;
+        } else {
+            trace("unknown DOG can't set point type");
+        }
+
+        return value;
 
     }
+
+    //gets a new KPoint
+    public function getKPointWithCubeMove(direction){
+        return new KPoint(a + transformations_move[direction][0], b + transformations_move[direction][1], c + transformations_move[direction][2], d );
+    }
+
+
 }
 
 class KPolygon {
@@ -51,10 +88,10 @@ class KPolygon {
 
     }
 
-    public function addPoint(a,b,c,d){
-
-        verticies.push(new KPoint(a,b,c,d));
-  
+    public function addPoint(a,b,c,d):KPoint{
+        var p = new KPoint(a,b,c,d);
+        verticies.push(p);
+        return p;
     }
 
     public function drawHexagon(center:KPoint){
