@@ -102,41 +102,60 @@ class Main extends luxe.Game {
     }
 
 
+
+
     override function ready() {
         
         polygons = new Array<KPolygon>();
 
+        grid = new KGrid(Luxe.screen.w/2,Luxe.screen.h/2,20,0,true);
+
+        var size:Int = Math.floor((Luxe.screen.w / (grid.north*2))/1.2);
 
 
-        for(a in -4...5){
-            for(b in -4...5){
-                for(c in -4...5){
-                    
+        var count = 0;
+
+        for(a in -size...size){
+            for(b in -size...size){
+                for(c in -size...size){
+
                     //this is our golden rule!
                     if(-a+b+c == 0){
-                         polygons.push(hex(a,b,c));  
+
+                         //do somthing for this cube.
+
+
+                        //polygons.push(hex(a,b,c));  
+
+
+
+
+                        var ittr = 12;
+
+                        for(i in 0...ittr){
+                            
+                            var poly = segment(a,b,c,i);
+
+                            var red = Math.sin(count/2)*0.5;
+                            var green = Math.cos(count/4);
+                            var blue = Math.abs(c/(size*2))  + (Math.random()*0.2);
+
+
+                            poly.colour = new Color(red,green,blue);
+                            polygons.push(poly);
+                            count ++;
+                             
+                        }
                     }
 
-                   
-
-                  
                 }
             }
         }
 
+    
 
-        var i:Int = polygons.push(hex(0,0,0));  
 
-        grid = new KGrid(Luxe.screen.w/2,Luxe.screen.h/2,45,0,true);
-        renderPolygons(polygons);
-
-        grid = new KGrid(Luxe.screen.w/2,Luxe.screen.h/2,15,0,true);
-        polygons[i-1].colour = Color.random(false);
-
-        renderPolygons(polygons);
-
-        grid = new KGrid(Luxe.screen.w/2,Luxe.screen.h/2,5,0,true);
-        polygons[i-1].colour = Color.random(false);        
+        // polygons[i-1].colour = Color.random(false);        
         renderPolygons(polygons);
 
         
@@ -150,7 +169,7 @@ class Main extends luxe.Game {
 
 
         for(i in 0...polygons.length){
-            trace("rendering poly - "+i);
+            // trace("rendering poly - "+i);
 
 
             //we have to transform our coordinate systems into cartesian coords using the values from our grid instance.
