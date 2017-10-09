@@ -1,0 +1,7 @@
+{
+    "haxe.displayConfigurations": [
+        ["bin/mac64.build/build.hxml"], //mac build
+        ["bin/web.build/build.debug.hxml"],    //web target
+        ["bin/windows.build/build.debug.hxml"]    //windows target
+    ]
+}

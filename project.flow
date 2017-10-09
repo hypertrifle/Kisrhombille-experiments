@@ -1,0 +1,22 @@
+{
+  project : {
+    name : 'fractal-experiments',
+    version : '0.0.1',
+    author : 'hypertrifle',
+
+    app : {
+      name : 'fractal-experiments',
+      package : 'com.hypertrifle.fractal-experiments'
+    },
+
+    build : {
+      dependencies : {
+        luxe : '*',
+      }
+    },
+
+    files : {
+      assets : 'assets/'
+    }
+  }
+}
