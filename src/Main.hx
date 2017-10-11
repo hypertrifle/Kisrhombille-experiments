@@ -37,7 +37,7 @@ class Main extends luxe.Game {
 
     } //config
 
-    public var grid:KGrid;
+    public static var grid:KGrid;
     public var polygons:Array<KPolygon>;
     // public var displayShapes:Array<
 
@@ -172,9 +172,17 @@ class Main extends luxe.Game {
         
         polygons = new Array<KPolygon>();
 
-        grid = new KGrid(Luxe.screen.w/2,Luxe.screen.h/2,20,0,true);
+        grid = new KGrid(Luxe.screen.w/2,Luxe.screen.h/2,200,0,true);
 
         var size:Int = Math.floor((Luxe.screen.w / (grid.north*2))/1.2);
+
+
+
+        shapeTests();
+        renderPolygons(polygons);
+        return;
+
+
 
 
         var count = 0;
@@ -228,6 +236,15 @@ class Main extends luxe.Game {
         // trace("BOOTING");
 
     } //ready
+
+
+    function shapeTests(){
+        trace("lets go");
+
+        var shape1:KPolygon = new KPolygon();
+
+
+    }
 
      //our before render
     function before(_) {
