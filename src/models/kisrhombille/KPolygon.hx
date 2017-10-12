@@ -52,7 +52,8 @@ class KPolygon {
     }
 
   
-
+    //a footprint consists of a array of the inside angles of each point in a polygon, this means we can match resized and translated polygons,
+    // if we reverse the footprint we can also match for symmetry i think?
     public function generateFootprint():Void {
 
         if(verticies.length < 3){
@@ -78,6 +79,7 @@ class KPolygon {
             var BC = Math.sqrt(Math.pow(B.x-C.x,2)+ Math.pow(B.y-C.y,2));
             var AC = Math.sqrt(Math.pow(C.x-A.x,2)+ Math.pow(C.y-A.y,2));
             
+
             var round:Float = Math.round(Math.acos((BC*BC+AB*AB-AC*AC)/(2*BC*AB)) * 10000) / 10000;
 
             angles.push(round);
@@ -87,7 +89,7 @@ class KPolygon {
 
 
         this.footprint = angles;
-        trace("footprint",angles);
+        // trace("footprint",angles);
 
         
     }
@@ -102,43 +104,5 @@ class KPolygon {
     public function drawHexagon(center:KPoint){
         
     }
-
-    public function getRelativeVerticies(){
-
-        //this the inside angle footprint idea is gonna work better.
-       
-        //find point closest to 0,0,0
-        var temp:Array<KPoint> = verticies.copy();
-
-
-        //sort our vertices by total distance from the origin.
-        haxe.ds.ArraySort.sort(temp, function(a, b):Int {                                         //dont hate me
-            if (Math.abs(a.a) + Math.abs(a.b) + Math.abs(a.c) < Math.abs(b.a) + Math.abs(b.b) + Math.abs(b.c)) return -1;
-            else if (Math.abs(a.a) + Math.abs(a.b) + Math.abs(a.c) > Math.abs(b.a) + Math.abs(b.b) + Math.abs(b.c)) return 1;
-            return 0;
-        });
-
-        //this is the clostest to ore origin
-        var closestVertex = temp[0];
-
-
-        //get the distance from 0,0,0 as a KPoint without a dog.
-        var offset:KPoint = new KPoint(-closestVertex.a,-closestVertex.b,-closestVertex.c,0);
-
-        //create a new vertacies array to populate with vertacies translated to touch the origin
-        var absoluteVertacies = new Array<KPoint>();
-
-        //transfor all the points to as close to the point as possible.
-        for(i in 0...verticies.length){
-            var vert = verticies[i];
-            absoluteVertacies.push(new KPoint(vert.a + offset.a, vert.b + offset.b, vert.c + offset.c, vert.d));
-        }
-
-        //return this.
-        return absoluteVertacies;
-
-        
-    }
-
 
 }

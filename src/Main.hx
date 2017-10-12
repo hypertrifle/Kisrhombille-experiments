@@ -61,7 +61,7 @@ class Main extends luxe.Game {
     }
 
 
-    public function segment(a:Int,b:Int,c:Int,seg:Int){
+    public function segment(a:Int,b:Int,c:Int,seg:Int, ?inPoly:KPolygon){
         var poly = new KPolygon();
        
         switch(seg){
@@ -114,7 +114,16 @@ class Main extends luxe.Game {
             poly.addPoint(a,b,c,1);
             poly.addPoint(a,b,c,2);
         }
-        return poly;
+
+        if(inPoly == null){
+            return poly;
+        } else {
+            return poly;
+            //we are going to attempt to merge?
+            // for(p in poly.verticies...0){
+            //     if(poly.verticies[p] 
+            // }
+        }
     }
 
 
@@ -172,17 +181,39 @@ class Main extends luxe.Game {
         
         polygons = new Array<KPolygon>();
 
-        grid = new KGrid(Luxe.screen.w/2,Luxe.screen.h/2,200,0,true);
+        grid = new KGrid(Luxe.screen.w/2,Luxe.screen.h/2,10,0,true);
+
+
+
+        gridTests();
+        // shapeTests();
+        renderPolygons(polygons);
+        return;       
+
+        // trace("BOOTING");
+
+    } //ready
+
+
+    function shapeTests(){
+        trace("lets go");
+
+        var shape1:KPolygon = new KPolygon();
+
+        shape1.addPoint(0,0,0,0);
+        shape1.addPoint(0,0,0,0).moveCube(1).moveCube(3,2);
+        shape1.addPoint(0,0,0,0).moveCube(5).moveCube(2,2);
+
+        polygons.push(shape1);
+
+
+
+
+    }
+
+    function gridTests(){
 
         var size:Int = Math.floor((Luxe.screen.w / (grid.north*2))/1.2);
-
-
-
-        shapeTests();
-        renderPolygons(polygons);
-        return;
-
-
 
 
         var count = 0;
@@ -198,9 +229,6 @@ class Main extends luxe.Game {
 
 
                         //polygons.push(hex(a,b,c));  
-
-
-
 
                         var ittr = 12;
 
@@ -226,24 +254,6 @@ class Main extends luxe.Game {
         }
 
     
-
-
-        // polygons[i-1].colour = Color.random(false);        
-        renderPolygons(polygons);
-
-        
-
-        // trace("BOOTING");
-
-    } //ready
-
-
-    function shapeTests(){
-        trace("lets go");
-
-        var shape1:KPolygon = new KPolygon();
-
-
     }
 
      //our before render

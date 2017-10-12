@@ -22,7 +22,7 @@ class KPoint {
 
     public var point_type:KPointType;
 
-    public function new(ant,bat,cat,dog){
+    public function new(?ant = 0,?bat = 0,?cat = 0,?dog = 0){
 
 
         //validate the "cube" co-ordinates.
@@ -56,12 +56,21 @@ class KPoint {
 
     } // end of constructor
 
-    //effects this kPoint
-    public function moveCube(direction:Int){
-        this.a += transformations_move[direction][0];
-        this.b += transformations_move[direction][1];
-        this.c += transformations_move[direction][2];
+    public function clone():KPoint {
+        return new KPoint(a,b,c,d);
     }
+
+    //effects this kPoint
+    public function moveCube(direction:Int, ?distance:Int = 1):KPoint{
+        for(i in 0...distance){
+            this.a += transformations_move[direction][0];
+            this.b += transformations_move[direction][1];
+            this.c += transformations_move[direction][2];
+        }
+
+        return this;
+    }
+
 
     public function set_d(value:Int):Int{
         this.d = value;
